@@ -44,7 +44,7 @@ class VM_RotatedConvFCBBoxHead(RotatedBBoxHead):
     """
 
     def __init__(self,
-                 save_path='/home/zhr/PETDet/mmrotate/models/roi_heads/bbox_heads/orth_bank/FR.npy',
+                 save_path='/home/jim.vanoosten/jimbo_results/BEST.pth',
                  num_shared_convs=0,
                  num_shared_fcs=0,
                  num_cls_convs=0,

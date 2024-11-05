@@ -7,8 +7,9 @@ from .sas_assigner import SASAssigner
 from .base_assigner import BaseAssigner
 from .assign_result import AssignResult
 from .ranking_assigner import RankingAssigner
+from .balanced_ranking_assigner import BalancedRankingAssigner
 
 __all__ = [
     'ConvexAssigner', 'MaxConvexIoUAssigner', 'SASAssigner', 'ATSSKldAssigner',
-    'ATSSObbAssigner', 'BaseAssigner', 'AssignResult', 'RankingAssigner',
+    'ATSSObbAssigner', 'BaseAssigner', 'AssignResult', 'RankingAssigner', 'BalancedRankingAssigner',
 ]
