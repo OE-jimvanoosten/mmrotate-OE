@@ -79,19 +79,19 @@ class VM_RotatedConvFCBBoxHead(RotatedBBoxHead):
         self.conv_cfg = conv_cfg
         self.norm_cfg = norm_cfg
 
-        # add shared convs and fcs
+        # add shared convs and fcs (only shared fcs)
         self.shared_convs, self.shared_fcs, last_layer_dim = \
             self._add_conv_fc_branch(
                 self.num_shared_convs, self.num_shared_fcs, self.in_channels,
                 True)
         self.shared_out_channels = last_layer_dim
 
-        # add cls specific branch
+        # add cls specific branch (does not happen)
         self.cls_convs, self.cls_fcs, self.cls_last_dim = \
             self._add_conv_fc_branch(
                 self.num_cls_convs, self.num_cls_fcs, self.shared_out_channels)
 
-        # add reg specific branch
+        # add reg specific branch (does not happen)
         self.reg_convs, self.reg_fcs, self.reg_last_dim = \
             self._add_conv_fc_branch(
                 self.num_reg_convs, self.num_reg_fcs, self.shared_out_channels)
@@ -136,24 +136,18 @@ class VM_RotatedConvFCBBoxHead(RotatedBBoxHead):
 
         # Function to calculate cosine similarity loss for the angle vectors
         def cosine_similarity_loss(angle_vectors):
-            # angle_vectors should be of shape [num_angles, vector_dim]
             normed_vectors = F.normalize(angle_vectors, p=2, dim=1)  # L2 normalization
             cosine_sim = torch.mm(normed_vectors, normed_vectors.t())  # Cosine similarity matrix
-            # Zero out the diagonal to ignore self-similarity
-            cosine_sim = cosine_sim - torch.eye(angle_vectors.size(0), device=angle_vectors.device)
+            cosine_sim = cosine_sim - torch.eye(angle_vectors.size(0), device=angle_vectors.device)  # Zero out the diagonal to ignore self-similarity
             loss = cosine_sim.pow(2).mean()  # Minimize the squared similarity between different vectors
             return loss
 
-        # Generate random vectors in the higher-dimensional space
-        random_vectors = np.random.randn(cls_channels, self.cls_last_dim)
+        random_vectors = np.random.randn(9, self.cls_last_dim) 
+        angle_matrix = random_vectors / np.linalg.norm(random_vectors, axis=1, keepdims=True)  
         
-        # Normalize to project them onto the unit hypersphere and orthogonalize
-        angle_matrix = random_vectors / np.linalg.norm(random_vectors, axis=1, keepdims=True)
-        
-        # # Save or load the angle matrix as needed
         if not os.path.exists(save_path):
             
-            vectors = nn.Parameter(torch.Tensor(angle_matrix)) #.to(torch.device('cuda')).to(torch.float16))
+            vectors = nn.Parameter(torch.Tensor(angle_matrix)) 
             optimizer = torch.optim.Adam([vectors], lr=1e-3)
             scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=5, factor=0.5)
 
@@ -169,7 +163,6 @@ class VM_RotatedConvFCBBoxHead(RotatedBBoxHead):
             
                 print(f'Epoch [{epoch}/50], Cosine Similarity Loss: {loss.item()}')
 
-            # After pre-training, save the final trained angle matrix to the specified path
             angle_matrix = vectors.detach().cpu().numpy()
             np.save(save_path, angle_matrix)
 
@@ -178,7 +171,6 @@ class VM_RotatedConvFCBBoxHead(RotatedBBoxHead):
         else:
             angle_matrix = np.load(save_path)
         
-        # # Projection layer to project classification features into the higher-dimensional space
         self.angle_vectors = torch.Tensor(angle_matrix).to(torch.device('cuda')).to(torch.float16)
         self.projection_layer = nn.Linear(self.cls_last_dim, self.cls_last_dim)
 
@@ -252,12 +244,8 @@ class VM_RotatedConvFCBBoxHead(RotatedBBoxHead):
         for fc in self.cls_fcs:
             x_cls = self.relu(fc(x_cls))
 
-        # # Project the classification features into the higher-dimensional space
-        x_cls_projected = self.projection_layer(x_cls)
-  
-        # Normalize the image features and angle vectors
-        image_feats = x_cls_projected / x_cls_projected.norm(dim=-1, keepdim=True)
-        angle_feats = self.angle_vectors / self.angle_vectors.norm(dim=-1, keepdim=True)
+        x_cls_projected = self.projection_layer(x_cls)   
+        image_feats = x_cls_projected / x_cls_projected.norm(dim=-1, keepdim=True)   
         angle_feats = self.angle_vectors.to(image_feats.dtype).to(image_feats.device)
 
         # Compute dot product (cosine similarity) between features and angle vectors
