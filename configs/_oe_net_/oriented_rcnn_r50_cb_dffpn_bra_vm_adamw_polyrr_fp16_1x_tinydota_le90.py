@@ -48,7 +48,7 @@ model = dict(
             ratios=[0.5, 1.0, 2.0],
             strides=[4, 8, 16, 32, 64]),
         bbox_coder=dict(
-            type='MidpointOffsetCoder', # maybe change to DeltaXYWHAOBBoxCoder
+            type='MidpointOffsetCoder',
             angle_range=angle_version,
             target_means=[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
             target_stds=[1.0, 1.0, 1.0, 1.0, 0.5, 0.5]),
@@ -70,7 +70,7 @@ model = dict(
             out_channels=256,
             featmap_strides=[4, 8, 16, 32]),
         
-        # oe-net uses VM_RotatedShared2FCBBoxHead instead of StandardRoIHead
+        # oe-net uses VM_RotatedShared2FCBBoxHead instead of RotatedShared2FCBBoxHead
         bbox_head=dict(
             type='VM_RotatedShared2FCBBoxHead',
             in_channels=256,
@@ -98,7 +98,7 @@ model = dict(
             assigner=dict(
                 type='BalancedRankingAssigner',
                 ignore_iof_thr=-1,
-                gpu_assign_thr=900, # originally 1200
+                gpu_assign_thr=900, 
                 iou_calculator=dict(type='BboxDistanceMetric'),
                 assign_metric='nwd',
                 topk=2,
@@ -126,7 +126,7 @@ model = dict(
                 match_low_quality=False,
                 iou_calculator=dict(type='RBboxOverlaps2D'),
                 ignore_iof_thr=-1,
-                gpu_assign_thr=1000), # originally 1200
+                gpu_assign_thr=1000), 
             sampler=dict(
                 type='RRandomSampler',
                 num=512,

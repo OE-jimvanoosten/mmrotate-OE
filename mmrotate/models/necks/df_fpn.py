@@ -214,40 +214,6 @@ class DF_FPN(BaseModule):
         return tuple(outs)
 
 
-# class MultiScaleDilatedFusion(nn.Module):
-#     def __init__(self, in_channels, out_channels=256):
-#         super(MultiScaleDilatedFusion, self).__init__()
-
-#         # CEM: Dilated convolutions with different dilation rates (1, 3, and 5)
-#         self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1, dilation=1)
-#         self.conv3 = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=3, dilation=3)
-#         self.conv5 = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=5, dilation=5)
-        
-#         # BatchNorm and ReLU for each convolution
-#         self.bn1 = nn.BatchNorm2d(out_channels)
-#         self.bn3 = nn.BatchNorm2d(out_channels)
-#         self.bn5 = nn.BatchNorm2d(out_channels)
-#         self.relu = nn.ReLU(inplace=True)
-
-#         # add fusion layer
-#         self.conv_attention = nn.Sequential(nn.Conv2d(out_channels*3, out_channels, 1),nn.ReLU(), nn.Conv2d(out_channels,3,3,padding=1))
-
-#     def forward(self, x):
-#         # CEM Part: Apply dilated convolutions (bs, 256, H, W)
-#         out1 = self.relu(self.bn1(self.conv1(x)))
-#         out3 = self.relu(self.bn3(self.conv3(x)))
-#         out5 = self.relu(self.bn5(self.conv5(x)))
-
-#         concat_maps = torch.cat([out1, out3, out5], dim=1)
-#         fusion_weights = self.conv_attention(concat_maps)
-#         fusion_weights = F.sigmoid(fusion_weights)
-#         fused_out = 0
-#         for i in range(3):
-#             fused_out += torch.unsqueeze(fusion_weights[:,i, :,:], dim=1) * [out1, out3, out5][i]
-
-#         return fused_out
-
-
 class MultiScaleDilatedFusion(nn.Module):
     def __init__(self, in_channels, out_channels=256):
         super(MultiScaleDilatedFusion, self).__init__()
