@@ -142,7 +142,7 @@ class VM_RotatedConvFCBBoxHead(RotatedBBoxHead):
             loss = cosine_sim.pow(2).mean()  # Minimize the squared similarity between different vectors
             return loss
 
-        random_vectors = np.random.randn(9, self.cls_last_dim) 
+        random_vectors = np.random.randn(cls_channels, self.cls_last_dim) 
         angle_matrix = random_vectors / np.linalg.norm(random_vectors, axis=1, keepdims=True)  
         
         if not os.path.exists(save_path):
@@ -151,7 +151,7 @@ class VM_RotatedConvFCBBoxHead(RotatedBBoxHead):
             optimizer = torch.optim.Adam([vectors], lr=1e-3)
             scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=5, factor=0.5)
 
-            for epoch in range(50):
+            for epoch in range(30):
                 
                 optimizer.zero_grad()
 
