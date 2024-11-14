@@ -151,7 +151,7 @@ class VM_RotatedConvFCBBoxHead(RotatedBBoxHead):
             optimizer = torch.optim.Adam([vectors], lr=1e-3)
             scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', patience=5, factor=0.5)
 
-            for epoch in range(30):
+            for epoch in range(20):
                 
                 optimizer.zero_grad()
 
