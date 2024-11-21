@@ -38,7 +38,7 @@ model = dict(
 
     # PROPOSAL HEAD
     rpn_head=dict(
-        type='OrientedRPNHead',
+        type='BRAOrientedRPNHead',
         in_channels=256,
         feat_channels=256,
         version=angle_version,

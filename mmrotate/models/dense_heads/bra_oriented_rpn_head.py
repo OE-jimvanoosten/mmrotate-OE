@@ -8,11 +8,11 @@ from mmdet.core import anchor_inside_flags, unmap
 
 from mmrotate.core import obb2xyxy
 from ..builder import ROTATED_HEADS
-from .rotated_rpn_head import RotatedRPNHead
+from .bra_rotated_rpn_head import BRARotatedRPNHead
 
 
 @ROTATED_HEADS.register_module()
-class OrientedRPNHead(RotatedRPNHead):
+class BRAOrientedRPNHead(BRARotatedRPNHead):
     """Oriented RPN head for Oriented R-CNN."""
 
     def _init_layers(self):
@@ -25,6 +25,7 @@ class OrientedRPNHead(RotatedRPNHead):
 
     def _get_targets_single(self,
                             flat_anchors,
+                            objectness_scores_all,
                             valid_flags,
                             gt_bboxes,
                             gt_bboxes_ignore,
@@ -67,16 +68,31 @@ class OrientedRPNHead(RotatedRPNHead):
         inside_flags = anchor_inside_flags(flat_anchors, valid_flags,
                                            img_meta['img_shape'][:2],
                                            self.train_cfg.allowed_border)
+
         if not inside_flags.any():
             return (None, ) * 7
+
         # assign gt and sample anchors
         anchors = flat_anchors[inside_flags, :]
+        objectness = objectness_scores_all[inside_flags]
 
         gt_hbboxes = obb2xyxy(gt_bboxes, self.version)
 
-        assign_result = self.assigner.assign(
-            anchors, gt_hbboxes, gt_bboxes_ignore,
-            None if self.sampling else gt_labels)
+        if hasattr(self.train_cfg,
+                            'assigner') and self.train_cfg.assigner.type.split(
+                                '.')[-1] == 'BalancedRankingAssigner':
+
+            assign_result = self.assigner.assign(
+                anchors, objectness, gt_hbboxes, gt_bboxes_ignore,
+                None if self.sampling else gt_labels
+            )
+
+        else:
+            assign_result = self.assigner.assign(
+                anchors, gt_hbboxes, gt_bboxes_ignore,
+                None if self.sampling else gt_labels
+            )
+
         sampling_result = self.sampler.sample(assign_result, anchors,
                                               gt_hbboxes)
 

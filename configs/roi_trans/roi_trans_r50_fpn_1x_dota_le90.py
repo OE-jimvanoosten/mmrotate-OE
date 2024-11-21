@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/datasets/dotav1.py', '../_base_/schedules/schedule_1x.py',
+    '../_base_/datasets/tinydota.py', '../_base_/schedules/schedule_1x.py',
     '../_base_/default_runtime.py'
 ]
 
@@ -66,7 +66,7 @@ model = dict(
                 in_channels=256,
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=15,
+                num_classes=8,
                 bbox_coder=dict(
                     type='DeltaXYWHAHBBoxCoder',
                     angle_range=angle_version,
@@ -86,7 +86,7 @@ model = dict(
                 in_channels=256,
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=15,
+                num_classes=8,
                 bbox_coder=dict(
                     type='DeltaXYWHAOBBoxCoder',
                     angle_range=angle_version,
@@ -111,6 +111,7 @@ model = dict(
                 neg_iou_thr=0.3,
                 min_pos_iou=0.3,
                 match_low_quality=True,
+                gpu_assign_thr=1200,
                 ignore_iof_thr=-1),
             sampler=dict(
                 type='RandomSampler',
@@ -135,6 +136,7 @@ model = dict(
                     min_pos_iou=0.5,
                     match_low_quality=False,
                     ignore_iof_thr=-1,
+                    gpu_assign_thr=1200,
                     iou_calculator=dict(type='BboxOverlaps2D')),
                 sampler=dict(
                     type='RandomSampler',
@@ -152,6 +154,7 @@ model = dict(
                     min_pos_iou=0.5,
                     match_low_quality=False,
                     ignore_iof_thr=-1,
+                    gpu_assign_thr=1200,
                     iou_calculator=dict(type='RBboxOverlaps2D')),
                 sampler=dict(
                     type='RRandomSampler',

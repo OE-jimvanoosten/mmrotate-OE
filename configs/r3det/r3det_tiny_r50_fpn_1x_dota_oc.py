@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/datasets/dotav1.py', '../_base_/schedules/schedule_1x.py',
+    '../_base_/datasets/tinydota.py', '../_base_/schedules/schedule_1x.py',
     '../_base_/default_runtime.py'
 ]
 
@@ -26,7 +26,7 @@ model = dict(
         num_outs=5),
     bbox_head=dict(
         type='RotatedRetinaHead',
-        num_classes=15,
+        num_classes=8,
         in_channels=256,
         stacked_convs=2,
         feat_channels=256,
@@ -56,7 +56,7 @@ model = dict(
     refine_heads=[
         dict(
             type='RotatedRetinaRefineHead',
-            num_classes=15,
+            num_classes=8,
             in_channels=256,
             stacked_convs=2,
             feat_channels=256,

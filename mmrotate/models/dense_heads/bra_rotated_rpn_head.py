@@ -15,7 +15,7 @@ from ..builder import ROTATED_HEADS
 
 
 @ROTATED_HEADS.register_module()
-class RotatedRPNHead(AnchorHead):
+class BRARotatedRPNHead(AnchorHead):
     """Rotated RPN head for rotated bboxes.
 
     Args:
@@ -29,7 +29,7 @@ class RotatedRPNHead(AnchorHead):
                  version='oc',
                  **kwargs):
         self.version = version
-        super(RotatedRPNHead, self).__init__(
+        super(BRARotatedRPNHead, self).__init__(
             1, in_channels, init_cfg=init_cfg, **kwargs)
 
     def _init_layers(self):
@@ -151,6 +151,7 @@ class RotatedRPNHead(AnchorHead):
 
     def get_targets(self,
                     anchor_list,
+                    objectness_scores_all,
                     valid_flag_list,
                     gt_bboxes_list,
                     img_metas,
@@ -218,6 +219,7 @@ class RotatedRPNHead(AnchorHead):
         results = multi_apply(
             self._get_targets_single,
             concat_anchor_list,
+            objectness_scores_all,
             concat_valid_flag_list,
             gt_bboxes_list,
             gt_bboxes_ignore_list,
@@ -326,6 +328,25 @@ class RotatedRPNHead(AnchorHead):
         Returns:
             dict[str, Tensor]: A dictionary of loss components.
         """
+
+        # Initialize an empty list to store the reshaped scores for each level
+        objectness_scores_per_level = []
+
+        for level_score in cls_scores:
+            # Move channels to last dimension, so shape becomes (batch_size, H, W, num_anchors)
+            level_score = level_score.permute(0, 2, 3, 1)
+
+            # Reshape to collapse spatial dimensions with anchors, shape -> (batch_size, H*W*num_anchors)
+            batch_size, height, width, num_anchors = level_score.shape
+            objectness_scores = level_score.reshape(batch_size, -1)
+
+            # Append to the list
+            objectness_scores_per_level.append(objectness_scores)
+
+        # Concatenate along the anchor dimension to get a single tensor
+        # shape -> (batch_size, total_anchors), where total_anchors = 261888
+        objectness_scores_all = torch.cat(objectness_scores_per_level, dim=1)
+
         featmap_sizes = [featmap.size()[-2:] for featmap in cls_scores]
         assert len(featmap_sizes) == self.anchor_generator.num_levels
 
@@ -334,8 +355,10 @@ class RotatedRPNHead(AnchorHead):
         anchor_list, valid_flag_list = self.get_anchors(
             featmap_sizes, img_metas, device=device)
         label_channels = self.cls_out_channels if self.use_sigmoid_cls else 1
+        # training for older models does not work due to new values for objectness
         cls_reg_targets = self.get_targets(
             anchor_list,
+            objectness_scores_all,
             valid_flag_list,
             gt_bboxes,
             img_metas,
