@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/datasets/dotav1.py', '../_base_/schedules/schedule_1x.py',
+    '../_base_/datasets/tinydota.py', '../_base_/schedules/schedule_1x.py',
     '../_base_/default_runtime.py'
 ]
 
@@ -26,7 +26,7 @@ model = dict(
         num_outs=5),
     fam_head=dict(
         type='RotatedRetinaHead',
-        num_classes=15,
+        num_classes=8,
         in_channels=256,
         stacked_convs=2,
         feat_channels=256,
@@ -58,7 +58,7 @@ model = dict(
         featmap_strides=[8, 16, 32, 64, 128]),
     odm_head=dict(
         type='ODMRefineHead',
-        num_classes=15,
+        num_classes=8,
         in_channels=256,
         stacked_convs=2,
         feat_channels=256,
@@ -88,6 +88,7 @@ model = dict(
                 neg_iou_thr=0.4,
                 min_pos_iou=0,
                 ignore_iof_thr=-1,
+                gpu_assign_thr=1200,
                 iou_calculator=dict(type='RBboxOverlaps2D')),
             allowed_border=-1,
             pos_weight=-1,
@@ -99,6 +100,7 @@ model = dict(
                 neg_iou_thr=0.4,
                 min_pos_iou=0,
                 ignore_iof_thr=-1,
+                gpu_assign_thr=1200,
                 iou_calculator=dict(type='RBboxOverlaps2D')),
             allowed_border=-1,
             pos_weight=-1,
