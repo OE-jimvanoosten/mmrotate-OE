@@ -24,36 +24,28 @@ class FAIR1MDataset(DOTADataset):
         version (str, optional): Angle representations. Defaults to 'oc'.
         difficulty (bool, optional): The difficulty threshold of GT.
     """
-    CLASSES = ('A220', 'A321', 'A330', 'A350', 'ARJ21', 'Baseball Field',
-               'Basketball Court', 'Boeing737', 'Boeing747', 'Boeing777',
-               'Boeing787', 'Bridge', 'Bus', 'C919', 'Cargo Truck',
-               'Dry Cargo Ship', 'Dump Truck', 'Engineering Ship',
-               'Excavator', 'Fishing Boat', 'Football Field', 'Intersection',
-               'Liquid Cargo Ship', 'Motorboat', 'Passenger Ship', 'Roundabout',
-               'Small Car', 'Tennis Court', 'Tractor', 'Trailer', 'Truck Tractor',
-               'Tugboat', 'Van', 'Warship', 'other-airplane', 'other-ship',
-               'other-vehicle')
+    CLASSES = ('small-vehicle', 'large-vehicle', 'excavator')
 
-    COURSE_TABLE = [0, 0, 0, 0, 0, 3,
-                    3, 0, 0, 0,
-                    0, 4, 2, 0, 2,
-                    1, 2, 1,
-                    2, 1, 3, 4,
-                    1, 1, 1, 4,
-                    2, 3, 2, 2, 2,
-                    1, 2, 1, 0, 1, 2]
+    # COURSE_TABLE = [0, 0, 0, 0, 0, 3,
+    #                 3, 0, 0, 0,
+    #                 0, 4, 2, 0, 2,
+    #                 1, 2, 1,
+    #                 2, 1, 3, 4,
+    #                 1, 1, 1, 4,
+    #                 2, 3, 2, 2, 2,
+    #                 1, 2, 1, 0, 1, 2]
 
-    PALETTE = [(0, 0, 0), (66, 0, 75), (120, 0, 137), (130, 0, 147), (105, 0, 156), (30, 0, 166),
-               (0, 0, 187), (0, 0, 215), (0, 52, 221), (0, 119, 221),
-               (0, 137, 221), (0, 154, 215), (0, 164,
-                                              187), (0, 170, 162), (0, 170, 143),
-               (0, 164, 90), (0, 154, 15), (0, 168, 0),
-               (0, 186, 0), (0, 205, 0), (0, 224, 0), (0, 243, 0),
-               (41, 255, 0), (145, 255, 0), (203, 249, 0), (232, 239, 0),
-               (245, 222, 0), (255, 204, 0), (255,
-                                              175, 0), (255, 136, 0), (255, 51, 0),
-               (247, 0, 0), (228, 0, 0), (215, 0, 0), (205, 0, 0), (204, 90, 90),
-               (204, 204, 204)]
+    # PALETTE = [(0, 0, 0), (66, 0, 75), (120, 0, 137), (130, 0, 147), (105, 0, 156), (30, 0, 166),
+    #            (0, 0, 187), (0, 0, 215), (0, 52, 221), (0, 119, 221),
+    #            (0, 137, 221), (0, 154, 215), (0, 164,
+    #                                           187), (0, 170, 162), (0, 170, 143),
+    #            (0, 164, 90), (0, 154, 15), (0, 168, 0),
+    #            (0, 186, 0), (0, 205, 0), (0, 224, 0), (0, 243, 0),
+    #            (41, 255, 0), (145, 255, 0), (203, 249, 0), (232, 239, 0),
+    #            (245, 222, 0), (255, 204, 0), (255,
+    #                                           175, 0), (255, 136, 0), (255, 51, 0),
+    #            (247, 0, 0), (228, 0, 0), (215, 0, 0), (205, 0, 0), (204, 90, 90),
+    #            (204, 204, 204)]
 
     def __init__(self,
                  ann_file,
@@ -81,6 +73,7 @@ class FAIR1MDataset(DOTADataset):
             cls_map = {c: i
                        for i, c in enumerate(self.CLASSES)
                        }  # in mmdet v2.0 label is 0-based
+        print(cls_map)
         ann_files = glob.glob(ann_folder + '/*.txt')
         data_infos = []
         if not ann_files:  # test phase

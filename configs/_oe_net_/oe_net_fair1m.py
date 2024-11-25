@@ -76,7 +76,7 @@ model = dict(
             in_channels=256,
             fc_out_channels=1024,
             roi_feat_size=7,
-            num_classes=37,
+            num_classes=3,
             save_path='/home/jim.vanoosten/mmrotate-OE/configs/_oe_net_/vectors.npy',
             bbox_coder=dict(
                 type='DeltaXYWHAOBBoxCoder',
@@ -170,7 +170,7 @@ train_pipeline = [
         rotate_ratio=0.5,
         angles_range=180,
         auto_bound=False,
-        rect_classes=[33],
+        # rect_classes=[33],
         version=angle_version),
 
     dict(type='Normalize', **img_norm_cfg),
