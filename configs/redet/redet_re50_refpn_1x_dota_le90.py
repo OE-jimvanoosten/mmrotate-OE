@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/datasets/dotav1.py', '../_base_/schedules/schedule_1x.py',
+    '../_base_/datasets/excasat.py', '../_base_/schedules/schedule_1x.py',
     '../_base_/default_runtime.py'
 ]
 
@@ -13,7 +13,7 @@ model = dict(
         out_indices=(0, 1, 2, 3),
         frozen_stages=1,
         style='pytorch',
-        pretrained='work_dirs/pretrain/re_resnet50_c8_batch256-25b16846.pth'),
+        pretrained='/home/jim.vanoosten/mmrotate-OE/configs/redet/re_resnet50_c8_batch256-25b16846.pth'),
     neck=dict(
         type='ReFPN',
         in_channels=[256, 512, 1024, 2048],
@@ -65,7 +65,7 @@ model = dict(
                 in_channels=256,
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=15,
+                num_classes=3,
                 bbox_coder=dict(
                     type='DeltaXYWHAHBBoxCoder',
                     angle_range=angle_version,
@@ -85,7 +85,7 @@ model = dict(
                 in_channels=256,
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=15,
+                num_classes=3,
                 bbox_coder=dict(
                     type='DeltaXYWHAOBBoxCoder',
                     angle_range=angle_version,
@@ -109,7 +109,8 @@ model = dict(
                 neg_iou_thr=0.3,
                 min_pos_iou=0.3,
                 match_low_quality=True,
-                ignore_iof_thr=-1),
+                ignore_iof_thr=-1,
+                gpu_assign_thr=900,),
             sampler=dict(
                 type='RandomSampler',
                 num=256,
@@ -133,6 +134,7 @@ model = dict(
                     min_pos_iou=0.5,
                     match_low_quality=False,
                     ignore_iof_thr=-1,
+                    gpu_assign_thr=900,
                     iou_calculator=dict(type='BboxOverlaps2D')),
                 sampler=dict(
                     type='RandomSampler',
@@ -150,6 +152,7 @@ model = dict(
                     min_pos_iou=0.5,
                     match_low_quality=False,
                     ignore_iof_thr=-1,
+                    gpu_assign_thr=900,
                     iou_calculator=dict(type='RBboxOverlaps2D')),
                 sampler=dict(
                     type='RRandomSampler',

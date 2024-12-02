@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/datasets/tinydota.py', '../_base_/schedules/schedule_1x.py',
+    '../_base_/datasets/excasat.py', '../_base_/schedules/schedule_1x.py',
     '../_base_/default_runtime.py'
 ]
 
@@ -66,7 +66,7 @@ model = dict(
                 in_channels=256,
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=8,
+                num_classes=3,
                 bbox_coder=dict(
                     type='DeltaXYWHAHBBoxCoder',
                     angle_range=angle_version,
@@ -86,7 +86,7 @@ model = dict(
                 in_channels=256,
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=8,
+                num_classes=3,
                 bbox_coder=dict(
                     type='DeltaXYWHAOBBoxCoder',
                     angle_range=angle_version,

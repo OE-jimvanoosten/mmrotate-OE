@@ -8,6 +8,10 @@ from mmcv.utils import print_log
 from mmdet.core import average_precision
 from terminaltables import AsciiTable
 
+import os 
+import matplotlib.pyplot as plt
+from scipy.interpolate import interp1d
+import numpy as np
 
 def tpfp_default(det_bboxes,
                  gt_bboxes,
@@ -172,6 +176,10 @@ def eval_rbbox_map(det_results,
 
     pool = get_context('spawn').Pool(nproc)
     eval_results = []
+    
+    # plt.figure(figsize=(10, 8))  # Initialize combined PR curve figure
+    # colors = plt.cm.get_cmap("tab10", num_classes)  # Generate distinct colors
+
     for i in range(num_classes):
         # get gt and det bboxes of this class
         cls_dets, cls_gts, cls_gts_ignore = get_cls_results(
@@ -221,7 +229,25 @@ def eval_rbbox_map(det_results,
             'precision': precisions,
             'ap': ap
         })
+
+        # # Plot PR curve for this class
+        # class_name = dataset[i] if dataset else f'Class {i}'
+        # pr_data_file = os.path.join('/home/jim.vanoosten/zorcnn', f'{class_name}_pr_data.npz')
+        # np.savez(pr_data_file, recall=recalls, precision=precisions)
+        # plt.plot(recalls, precisions, label=f'{class_name} (AP={ap:.4f})', color=colors(i))
+
     pool.close()
+
+    # # Finalize combined PR curve plot
+    # plt.xlabel('Recall')
+    # plt.ylabel('Precision')
+    # plt.title('Precision-Recall Curve')
+    # plt.legend(loc='best', fontsize='small')
+    # plt.grid()
+    # combined_curve_path = os.path.join('/home/jim.vanoosten/', 'combined_pr_curve.png')
+    # plt.savefig(combined_curve_path)
+    # plt.close()
+
     if scale_ranges is not None:
         # shape (num_classes, num_scales)
         all_ap = np.vstack([cls_result['ap'] for cls_result in eval_results])

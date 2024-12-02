@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/datasets/tinydota.py', '../_base_/schedules/schedule_1x.py',
+    '../_base_/datasets/excasat.py', '../_base_/schedules/schedule_1x.py',
     '../_base_/default_runtime.py'
 ]
 
@@ -26,7 +26,7 @@ model = dict(
         num_outs=5),
     fam_head=dict(
         type='RotatedRetinaHead',
-        num_classes=8,
+        num_classes=3,
         in_channels=256,
         stacked_convs=2,
         feat_channels=256,
@@ -58,7 +58,7 @@ model = dict(
         featmap_strides=[8, 16, 32, 64, 128]),
     odm_head=dict(
         type='ODMRefineHead',
-        num_classes=8,
+        num_classes=3,
         in_channels=256,
         stacked_convs=2,
         feat_channels=256,

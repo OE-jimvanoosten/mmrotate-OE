@@ -222,10 +222,10 @@ def plot_confusion_matrix(confusion_matrix,
 
     ax.set_ylim(len(confusion_matrix) - 0.5, -0.5)  # matplotlib>3.1.1
 
-    fig.tight_layout()
+    # fig.tight_layout()
     if save_dir is not None:
         plt.savefig(
-            os.path.join(save_dir, 'confusion_matrix.png'), format='png')
+            os.path.join(save_dir, 'confusion_matrix.pdf'), format='pdf',  bbox_inches='tight')
     if show:
         plt.show()
 
@@ -257,9 +257,11 @@ def main():
                                                   args.score_thr,
                                                   args.nms_iou_thr,
                                                   args.tp_iou_thr)
+    print(dataset.CLASSES)
+    classes_poep = ('sv', 'lv', 'ex')
     plot_confusion_matrix(
         confusion_matrix,
-        dataset.CLASSES + ('background', ),
+        classes_poep + ('bg', ),
         save_dir=args.save_dir,
         show=args.show)
 

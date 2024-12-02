@@ -1,5 +1,5 @@
 _base_ = [
-    '../_base_/datasets/dotav1.py', '../_base_/schedules/schedule_1x.py',
+    '../_base_/datasets/excasat.py', '../_base_/schedules/schedule_1x.py',
     '../_base_/default_runtime.py'
 ]
 angle_version = 'le90'
@@ -28,7 +28,7 @@ model = dict(
         relu_before_extra_convs=True),
     bbox_head=dict(
         type='RotatedFCOSHead',
-        num_classes=15,
+        num_classes=3,
         in_channels=256,
         stacked_convs=4,
         feat_channels=256,

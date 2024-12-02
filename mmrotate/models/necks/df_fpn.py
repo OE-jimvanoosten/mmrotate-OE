@@ -64,6 +64,7 @@ class DF_FPN(BaseModule):
                  in_channels,
                  out_channels,
                  num_outs,
+                 dilations=[1, 3, 5],
                  start_level=0,
                  end_level=-1,
                  add_extra_convs=False,
@@ -130,7 +131,7 @@ class DF_FPN(BaseModule):
             self.fpn_convs.append(fpn_conv)
 
         # Add CEM for C5 (deepest layer)
-        self.cem = MultiScaleDilatedFusion(in_channels[-1], out_channels)
+        self.cem = MultiScaleDilatedFusion(in_channels[-1], out_channels, dilations)
 
         # add extra conv layers (e.g., RetinaNet)
         extra_levels = num_outs - self.backbone_end_level + self.start_level
@@ -215,13 +216,15 @@ class DF_FPN(BaseModule):
 
 
 class MultiScaleDilatedFusion(nn.Module):
-    def __init__(self, in_channels, out_channels=256):
+    def __init__(self, in_channels, out_channels=256, dilations=[1, 3, 5]):
         super(MultiScaleDilatedFusion, self).__init__()
 
+        print(dilations[0], dilations[1], dilations[2])
+
         # Dilated convolutions with different dilation rates and strides
-        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1, dilation=1, stride=1)
-        self.conv3 = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=3, dilation=3, stride=2)
-        self.conv5 = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=5, dilation=5, stride=3)
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1, dilation=dilations[0], stride=1)
+        self.conv3 = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=3, dilation=dilations[1], stride=2)
+        self.conv5 = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=5, dilation=dilations[2], stride=3)
         
         # BatchNorm and ReLU for each convolution
         self.bn1 = nn.BatchNorm2d(out_channels)
