@@ -258,10 +258,11 @@ def main():
                                                   args.nms_iou_thr,
                                                   args.tp_iou_thr)
     print(dataset.CLASSES)
-    classes_poep = ('sv', 'lv', 'ex')
+    confusion_matrix_classes = dataset.CLASSES
+    confusion_matrix_classes = ('pl', 'br', 'sv', 'lv', 'sh', 'st', 'sp', 'hc') 
     plot_confusion_matrix(
         confusion_matrix,
-        classes_poep + ('bg', ),
+        confusion_matrix_classes + ('bg', ),
         save_dir=args.save_dir,
         show=args.show)
 
