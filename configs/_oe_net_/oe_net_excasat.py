@@ -77,7 +77,7 @@ model = dict(
             fc_out_channels=1024,
             roi_feat_size=7,
             num_classes=3,
-            save_path='/home/jim.vanoosten/mmrotate-OE/configs/_oe_net_/vectors.npy',
+            save_path='/home/jim.vanoosten/mmrotate-OE/configs/_oe_net_/vectors_excasat.npy', # make sure to choose the path to the pretrained vectors here
             bbox_coder=dict(
                 type='DeltaXYWHAOBBoxCoder',
                 angle_range=angle_version,
@@ -88,7 +88,7 @@ model = dict(
                 target_stds=(0.1, 0.1, 0.2, 0.2, 0.1)),
             reg_class_agnostic=True,
             loss_cls=dict(
-                type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0), #change
+                type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0),
             loss_bbox=dict(type='SmoothL1Loss', beta=1.0, loss_weight=1.0))),
     
     # TRAINING CONFIG

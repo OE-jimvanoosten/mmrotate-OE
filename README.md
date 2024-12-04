@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="mmrotate-OE/resources/excavator.png" width="400">
+  <img src="resources/excavator.png" width="400">
 </div>
 
 ## Installation
@@ -39,11 +39,11 @@ pip install timm apex yapf==0.40.1
 ### Train OE-Net
 
 ```shell
-python tools/train.py mmrotate-OE/configs/_oe_net_/oe_net.py
+python tools/train.py mmrotate-OE/configs/_oe_net_/oe_net_excasat.py
 ```
 
 ### Test OE-Net
 
 ```shell
-python tools/test.py mmrotate-OE/configs/_oe_net_/oe_net.py path/to/model/weights.pth
+python tools/test.py mmrotate-OE/configs/_oe_net_/oe_net_excasat.py path/to/model/weights.pth --eval mAP
 ```

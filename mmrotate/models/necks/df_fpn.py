@@ -219,8 +219,6 @@ class MultiScaleDilatedFusion(nn.Module):
     def __init__(self, in_channels, out_channels=256, dilations=[1, 3, 5]):
         super(MultiScaleDilatedFusion, self).__init__()
 
-        print(dilations[0], dilations[1], dilations[2])
-
         # Dilated convolutions with different dilation rates and strides
         self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1, dilation=dilations[0], stride=1)
         self.conv3 = nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=3, dilation=dilations[1], stride=2)
