@@ -1,6 +1,5 @@
 # dataset settings
-dataset_type = 'DOTADataset'
-data_root = 'data/split_1024_dota1_0/'
+dataset_type = 'ExcaSatKFold'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
@@ -11,7 +10,7 @@ train_pipeline = [
     dict(type='Normalize', **img_norm_cfg),
     dict(type='Pad', size_divisor=32),
     dict(type='DefaultFormatBundle'),
-    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'])
+    dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels'],meta_keys=('img_shape'))
 ]
 test_pipeline = [
     dict(type='LoadImageFromFile'),
@@ -28,20 +27,20 @@ test_pipeline = [
         ])
 ]
 data = dict(
-    samples_per_gpu=2,
-    workers_per_gpu=2,
+    samples_per_gpu=4,
+    workers_per_gpu=4,
     train=dict(
         type=dataset_type,
-        ann_file='/home/jim.vanoosten/dota/split_ss_dota/trainval/annfiles/',
-        img_prefix='/home/jim.vanoosten/dota/split_ss_dota/trainval/images/',
+        ann_file='/home/jim.vanoosten/kfold_splits/fold_0_train.json',  # Point to the JSON for fold 0
+        img_prefix='/home/jim.vanoosten/tinyfair1m/excasat/kfold/images',  # Path to the images
         pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
-        ann_file='/home/jim.vanoosten/dota/split_ss_dota/trainval/annfiles/',
-        img_prefix='/home/jim.vanoosten/dota/split_ss_dota/trainval/images/',
+        ann_file='/home/jim.vanoosten/kfold_splits/fold_0_val.json',  # Point to the JSON for fold 0
+        img_prefix='/home/jim.vanoosten/tinyfair1m/excasat/kfold/images',  # Path to the images
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
-        ann_file='/home/jim.vanoosten/dota/split_ss_dota/trainval/annfiles/',
-        img_prefix='/home/jim.vanoosten/dota/split_ss_dota/trainval/images/',
+        ann_file='/home/jim.vanoosten/kfold_splits/fold_0_val.json',  # Optionally use val set for test
+        img_prefix='/home/jim.vanoosten/tinyfair1m/excasat/kfold/images',  # Path to the images
         pipeline=test_pipeline))

@@ -1,7 +1,3 @@
-# Turn into a tools/inference.py file which you can run from the command line and give
-# arguments to. This script should be able to take in a config file, a checkpoint file, a data root
-# and an output root. It should then run inference on the data root and save the results to the output
-
 import os
 import mmcv
 from mmcv.runner import load_checkpoint
@@ -80,15 +76,15 @@ def append_results_to_cvat_xml(tree, result, image_name, image_id, width, height
             })
 
 # Set the root directory for the images and results
-root_img_dir = '/home/jim.vanoosten/tinydota/test/images'
+root_img_dir = '/home/jim.vanoosten/JimageNet'
 root_res_dir = '/home/jim.vanoosten/JimageNet_results'
 
 # Choose to use a config and initialize the detector
-config = '/home/jim.vanoosten/mmrotate-OE/work_dirs/oe_net_687/oe_net.py'
+config = '/home/jim.vanoosten/mmrotate-OE/work_dirs/oe_net_excasat/oe_net_excasat.py'
 config_name = os.path.splitext(os.path.basename(config))[0]
 
 # Setup a checkpoint file to load
-checkpoint = '/home/jim.vanoosten/mmrotate-OE/work_dirs/oe_net_687/epoch_12.pth'
+checkpoint = '/home/jim.vanoosten/mmrotate-OE/work_dirs/oe_net_excasat/epoch_12.pth'
 
 # create folder inside inference results folder with config_name as name
 newpath = os.path.join(root_res_dir, config_name)
@@ -137,16 +133,16 @@ tree = ET.ElementTree(annotations)
 image_id = 0
 
 # Use the detector to do inference
-for img in os.listdir(root_img_dir)[:500]:
+for img in os.listdir(root_img_dir):
     img_name = img
     img_path = os.path.join(root_img_dir, img)
     result = inference_detector_by_patches(model, img_path, [1024], [512], [1.0], 0.1)
-    
+
     # Save the result image to the output directory
     output_file = os.path.join(newpath, img)
-    show_result_pyplot(model, img_path, result, palette='dota', score_thr=0.4, out_file=output_file) #palette='dota'
+    show_result_pyplot(model, img_path, result, score_thr=0.5, out_file=output_file) #palette='dota'
     print(f"Result saved to {output_file}")
-    
+
     # XML information
     width, height = 1024, 1024  # Adjust according to your image dimensions
     threshold = 0.4
