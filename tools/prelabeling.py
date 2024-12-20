@@ -9,18 +9,10 @@ import math
 
 # Define the label mapping for your dataset
 LABELS = {
-    0: 'plane',
-    1: 'bridge',
-    2: 'small-vehicle',
-    3: 'large-vehicle',
-    4: 'ship',
-    5: 'storage-tank',
-    6: 'swimming-pool',
-    7: 'helicopter'
+    0: 'small-vehicle',
+    1: 'large-vehicle',
+    2: 'excavator',
 }
-
-# Define the allowed classes you want to keep
-ALLOWED_CLASSES = ['small-vehicle', 'large-vehicle']
 
 def append_results_to_cvat_xml(tree, result, image_name, image_id, width, height, threshold=0.3):
     """Appends results of a single image to an existing XML tree."""
@@ -39,10 +31,6 @@ def append_results_to_cvat_xml(tree, result, image_name, image_id, width, height
     # Loop over the results (list of arrays per class)
     for class_index, boxes in enumerate(result):
         label_name = LABELS.get(class_index, 'unknown')  # Get label name from index
-
-        # Only process if the class is either 'small-vehicle' or 'large-vehicle'
-        if label_name not in ALLOWED_CLASSES:
-            continue
 
         # Process each bounding box
         for box in boxes:
@@ -77,7 +65,7 @@ def append_results_to_cvat_xml(tree, result, image_name, image_id, width, height
 
 # Set the root directory for the images and results
 root_img_dir = '/home/jim.vanoosten/JimageNet'
-root_res_dir = '/home/jim.vanoosten/JimageNet_results'
+root_res_dir = '/home/jim.vanoosten/JimageNet_results/oe'
 
 # Choose to use a config and initialize the detector
 config = '/home/jim.vanoosten/mmrotate-OE/work_dirs/oe_net_excasat/oe_net_excasat.py'
@@ -145,7 +133,7 @@ for img in os.listdir(root_img_dir):
 
     # XML information
     width, height = 1024, 1024  # Adjust according to your image dimensions
-    threshold = 0.4
+    threshold = 0.5
 
     # Append the results to the existing XML tree
     append_results_to_cvat_xml(tree, result, img_name, image_id, width, height, threshold)

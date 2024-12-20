@@ -1,5 +1,5 @@
 # dataset settings
-dataset_type = 'ExcaSat'
+dataset_type = 'ExcaSatOneClass'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
@@ -31,13 +31,13 @@ data = dict(
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
-        ann_file='/home/jim.vanoosten/tinyfair1m/excasat/trainvaltest/annfiles/',
-        img_prefix='/home/jim.vanoosten/tinyfair1m/excasat/trainvaltest/images/',
+        ann_file='/home/jim.vanoosten/tinyfair1m/FAIR1M2.0/trainval/annfiles/',
+        img_prefix='/home/jim.vanoosten/tinyfair1m/FAIR1M2.0/trainval/images/',
         pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
-        ann_file='/home/jim.vanoosten/tinyfair1m/excasat/trainvaltest/annfiles/',
-        img_prefix='/home/jim.vanoosten/tinyfair1m/excasat/trainvaltest/images/',
+        ann_file='/home/jim.vanoosten/tinyfair1m/FAIR1M2.0/trainval/annfiles/',
+        img_prefix='/home/jim.vanoosten/tinyfair1m/FAIR1M2.0/trainval/images/',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,

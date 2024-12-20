@@ -1,5 +1,5 @@
 # dataset settings
-dataset_type = 'ExcaSatKFold'
+dataset_type = 'ExcaSatOneClass'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
@@ -31,16 +31,16 @@ data = dict(
     workers_per_gpu=4,
     train=dict(
         type=dataset_type,
-        ann_file='/home/jim.vanoosten/kfold_splits/fold_0_train.json',  # Point to the JSON for fold 0
-        img_prefix='/home/jim.vanoosten/tinyfair1m/excasat/kfold/images',  # Path to the images
+        ann_file='/home/jim.vanoosten/tinyfair1m/excasat/_original_multiscale/annfiles_1class',
+        img_prefix='/home/jim.vanoosten/tinyfair1m/excasat/_original_multiscale/images',
         pipeline=train_pipeline),
     val=dict(
         type=dataset_type,
-        ann_file='/home/jim.vanoosten/kfold_splits/fold_0_val.json',  # Point to the JSON for fold 0
-        img_prefix='/home/jim.vanoosten/tinyfair1m/excasat/kfold/images',  # Path to the images
+        ann_file='/home/jim.vanoosten/tinyfair1m/excasat/_original_multiscale/annfiles_1class',
+        img_prefix='/home/jim.vanoosten/tinyfair1m/excasat/_original_multiscale/images',
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
-        ann_file='/home/jim.vanoosten/kfold_splits/fold_0_val.json',  # Optionally use val set for test
-        img_prefix='/home/jim.vanoosten/tinyfair1m/excasat/kfold/images',  # Path to the images
+        ann_file='/home/jim.vanoosten/tinyfair1m/excasat/test/annfiles/',
+        img_prefix='/home/jim.vanoosten/tinyfair1m/excasat/test/images/',
         pipeline=test_pipeline))

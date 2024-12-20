@@ -6,6 +6,8 @@ from .pipelines import *  # noqa: F401, F403
 from .sar import SARDataset  # noqa: F401, F403
 from .tinydota import DOTAtinyDataset
 from .excasat import ExcaSat
+from .excasat_1class import ExcaSatOneClass
 
 __all__ = ['SARDataset', 'DOTADataset', 'build_dataset', 
-           'HRSCDataset', 'DOTAtinyDataset', 'ExcaSat']
+           'HRSCDataset', 'DOTAtinyDataset', 'ExcaSat',
+           'ExcaSatOneClass']
