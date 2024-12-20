@@ -5,8 +5,7 @@
 ## Installation
 
 MMRotate depends on [PyTorch](https://pytorch.org/), [MMCV](https://github.com/open-mmlab/mmcv) and [MMDetection](https://github.com/open-mmlab/mmdetection).
-Below are quick steps for installation.
-Please refer to [Install Guide](https://mmrotate.readthedocs.io/en/latest/install.html) for more detailed instruction.
+In the GET_STARTED.md file, you find useful tips for this repo!
 
 ### Get conda
 

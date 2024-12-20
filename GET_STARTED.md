@@ -1,6 +1,6 @@
 # GET_STARTED.md
 
-This document is intended to help your successor understand and navigate the mmrotate-OE repository effectively. Below is a breakdown of the repository structure, workflow, and troubleshooting tips.
+This document is intended to help you understand and navigate the mmrotate-OE repository effectively. Below is a breakdown of the repository structure, workflow, and troubleshooting tips.
 
 ---
 
@@ -10,28 +10,35 @@ The `mmrotate-OE` repository consists of three primary folders:
 
 ### 1. **`configs`**
 
-- Contains configuration files for various models.
-- These files define:
+- Contains configuration files for models. OE-Net is in the `configs/_oe_net_/` folder. The config files for your datasets (paths, preprocessing settings, batch size, etc.) and your training schedules (optimizer config, validation settings, etc.) are stored in the `configs/_base_/datasets/` and the ` configs/_base_/schedules/` folders, respectively.
+
+All in all, the config files define:
+
   - Model architecture.
   - Training parameters (e.g., learning rate, epochs).
   - Dataset paths and augmentation pipelines.
-- Config files often inherit base configurations to reduce duplication.
+
+- Config files like `oe_net_excasat.py` inherit base configurations for datasets and training schedules, as can be seen in the first lines of the config file.
 
 ### 2. **`mmrotate`**
 
 - Holds Python scripts that define the necessary classes for modules.
 - Key components:
-  - Custom datasets.
-  - Custom models and heads.
-  - Training hooks and utilities.
-- **Registry System:** This folder registers classes used in the repository so they can be located during training/testing.
+  - Custom datasets. In the `mmrotate/datasets/` folder, you store your script that makes sure the dataset (and especially the format of the images and the annotations) can be loaded and prepared for training/testing effectively. Make sure to add newly registered class to init file, if you introduce new dataset class!
+  - Custom modules. In the `mmrotate/models/` folder, the custom modules are stored. These include necks, proposal heads, detection heads, and much more. OE-Net inherits most of its modules, from here (e.g. `mmrotate/models/dense_heads/bra_oriented_rpn_head.py` contains the BRAOrientedRPNHead.)
+  - Core modules. In the `mmrotate/core/` folder, key modules such as the anchor generator, the assigner, the sampler, and the overlap calculator are given.
+  - Models. In the `\mmrotate/models/detectors/` folder, the `oriented_rcnn.py` file contains the initializaztion for the model. Its parent class, `RotatedTwoStageDetector`, contains the forward train function that activates the modules in the detector. OE-Net is also an Oriented R-CNN model, but it uses a number different modules (indicated in OE-Net config file).
+- **Registry System:** Classes/modules are registered in a registry system, such that when you train/test, and the model is built from your config, the builder can find the modules that you are mentioning in your config file.
 
 ### 3. **`tools`**
 
 - Contains scripts to:
   - Train models (`train.py`).
   - Test models (`test.py`).
-  - Perform inference.
+  - Perform inference (`inference.py`).
+  - Prelabel images (`prelabeling.py`).
+  - Annotation conversion (`label_conversion_cvat2dota.py`)
+
 - Acts as the entry point for running training and evaluation tasks.
 
 ---
@@ -40,7 +47,7 @@ The `mmrotate-OE` repository consists of three primary folders:
 
 ### mmdetection
 
-- Many classes in `mmrotate-OE` inherit from `mmdetection`. These classes are located in:
+- Some modules in `mmrotate-OE` inherit from `mmdetection`, such as the ResNet-50 backbone. These classes are located in:
   `/home/jim.vanoosten/miniconda3/envs/hrod/lib/python3.7/site-packages/mmdet`
 
 ### mmcv
@@ -48,7 +55,7 @@ The `mmrotate-OE` repository consists of three primary folders:
 - Additional utilities and base classes are imported from `mmcv`. These are located in:
   `/home/jim.vanoosten/miniconda3/envs/hrod/lib/python3.7/site-packages/mmcv`
 
-If a required class or module is not found in `mmrotate`, check the above locations.
+If a required class or module is not found in the `mmrotate` folder, check the above locations.
 
 ---
 
@@ -62,7 +69,7 @@ If a required class or module is not found in `mmrotate`, check the above locati
 2. **Trace the Inheritance**:
 
    - Start with the configuration file.
-   - Identify the classes it imports.
+   - Identify the classes/modules it imports.
    - Look for their definitions in `mmrotate`. If not found, check `mmdetection` or `mmcv`.
 
 ---
@@ -96,7 +103,7 @@ If a required class or module is not found in `mmrotate`, check the above locati
 
 1. **Entry Point:** `test.py`.
 
-   - Similar to `train.py`, requires a config file.
+   - Similar to `train.py`, requires a config file, but also a weights file.
 
 2. **Hook Activation:**
 
@@ -121,4 +128,4 @@ If a required class or module is not found in `mmrotate`, check the above locati
 
 ---
 
-This document provides a foundational understanding of the `mmrotate-OE` repository. For further assistance, refer to specific scripts and documentation within the repository or reach out for clarification.
+This document provides a foundational understanding of the `mmrotate-OE` repository. For further assistance, Slack me!
